@@ -1,19 +1,17 @@
 from prettytable import PrettyTable
 
-# dictionary
 
-data_account = {
-    'davina': {'PIN': '1975', 'saldo': 800000, 'E-Pay': 700000},
-    'lily': {'PIN': '6666', 'saldo': 200000, 'E-Pay': 100000},
-    'salma': {'PIN': '8888', 'saldo': 30000, 'E-Pay': 90000},
-    'aura99': {'PIN': '7777', 'saldo': 40000, 'E-Pay': 80000}
+# dictionary berisi akun (nama, PIN, saldo, E-pay)
+thisdict = {
+    'davina'  : {'PIN'    : '6666', 'saldo':    208000,     'E-Pay': 1000000},
+    'salma'   : {'PIN'    : '8888', 'saldo':    39000,      'E-Pay': 1000000},
+    'aura99'  : {'PIN'    : '7777', 'saldo':    433000,     'E-Pay': 1000000}
 }
 
-voucher_toko = {"kode": "dora", "nama": "boots", "diskon": 0.15, "status": 2}
+voucher_toko = {"kode": "dora", "diskon": 0.20, "status": 15}
 
-vip_pin = {'PIN': "1975"}
 
-# fungsi tabel
+# tabel dengan pretty table
 
 table_candyshop = PrettyTable()
 table_candyshop.field_names = ['no', 'candies', 'price']
@@ -22,7 +20,7 @@ table_candyshop.add_row([2, 'cotton candy', 20000])
 table_candyshop.add_row([3, 'nougat', 30000])
 table_candyshop.add_row([4, 'chewing gum', 40000])
 
-
+# fungsi transaksi
 def candyshop_transaksi():
     print('======================================')
     print('     lakukan transaksi candyshop      ')
@@ -34,14 +32,14 @@ def candyshop_transaksi():
             jumlah_permen = int(input("how many candies do you want to buy: "))
             harga_permen = table_candyshop._rows[nomor_permen - 1][2]
             total_harga = jumlah_permen * harga_permen
-            print(f"\n how much you need to pay Rp. {total_harga} ")
+            print(f" how much you need to pay Rp. {total_harga} ")
 
         else:
             print("there is no product, try again\n")
-    except ValueError:
+    except:
         print("Invalid input. Please enter a valid number.\n")
 
-
+# fungsi tukar voucher
 def redeem_voucher(total_harga, nama):
     nama = nama_login
     print("===================")
@@ -52,8 +50,8 @@ def redeem_voucher(total_harga, nama):
     bayar = input("choose payment method : ")
 
     if bayar == "1":
-        if data_account[nama]["E-Pay"] >= total_harga:
-            data_account[nama]["E-Pay"] -= total_harga
+        if thisdict[nama]["E-Pay"] >= total_harga:
+            thisdict[nama]["E-Pay"] -= total_harga
             print("payment with E-pay successful.")
         else:
             print("not enough E-pay.")
@@ -64,10 +62,10 @@ def redeem_voucher(total_harga, nama):
             and voucher_toko["status"] >= 2
         ):
             diskon = total_harga - (total_harga * 0.20)
-            data_account[nama]["E-Pay"] -= diskon
+            thisdict[nama]["E-Pay"] -= diskon
             voucher_toko["status"] -= 1
             print(
-                f"Congratulations, you saved 20% off the price {diskon}\npayment with voucher is successful "
+                "Congratulations, you saved 20% off the price {diskon}\npayment with voucher is successful "
             )
         else:
             print("voucher code is wrong or voucher is not available, try again.")
@@ -79,25 +77,27 @@ def redeem_voucher(total_harga, nama):
     voucher_toko_input = input("Enter your voucher code : ")
     if voucher_toko["kode"] == voucher_toko_input and voucher_toko["status"] >= 2:
         diskon = total_harga - (total_harga * 0.20)
-        data_account[nama]["E-Pay"] -= diskon
+        thisdict[nama]["E-Pay"] -= diskon
         voucher_toko["status"] -= 1
         print(f"Congratulations, you saved 20% off the price {diskon}\nVoucher redeemed successfully.")
     else:
         print("Voucher code is wrong or voucher is not available, try again.")
 
-
+# fungsi member
 def member():
+    pin_member = '1975'  
     nama = nama_login
     member_status = input("Apakah Anda memiliki kartu member? (y/n): ")
     if member_status.lower() == "y":
         pin = input("Masukkan PIN Anda: ")
-        if data_account[nama]['PIN'] == vip_pin["PIN"]:
+        if pin == pin_member:  
+            print('data_valid')
             try:
                 total_harga = int(input("Masukkan total harga belanja: "))
-                if data_account[nama]["E-Pay"] >= total_harga:
+                if thisdict[nama]["E-Pay"] >= total_harga:
                     print("Selamat, Anda mendapatkan diskon 30%.")
                     diskon = total_harga * 0.30
-                    data_account[nama]["E-Pay"] -= diskon
+                    thisdict[nama]["E-Pay"] -= diskon
                     print(f"Harga belanja setelah diskon: {total_harga - diskon}")
                 else:
                     print("E-pay tidak mencukupi.")
@@ -115,6 +115,8 @@ def member():
         print("Pilihan tidak valid.")
 
 
+
+# fungsi tambah saldo
 def tambah_saldo():
     nama = input("Masukkan nama akun Anda: ")
     print("=============================")
@@ -123,41 +125,22 @@ def tambah_saldo():
     try:
         uang = int(input("Enter the nominal amount of money : "))
         if uang > 0:
-            data_account[nama]["saldo"] += uang
-            print(f"currently account balance: {data_account[nama]['saldo']}")
+            thisdict[nama]["saldo"] += uang
+            print(f"currently account balance: {thisdict[nama]['saldo']}")
         else:
             print("cannot enter 0")
     except ValueError:
         print("Invalid input. Please enter a valid number.\n")
 
-
+# fungsi cek saldo
 def cek_saldo():
     nama = input("Masukkan nama akun Anda: ")
     print("======================= Cek Saldo ========================")
-    print(f"Saldo anda saat ini : {data_account[nama]['saldo']}")
-    print(f"Saldo e-pay anda saat ini : {data_account[nama]['E-Pay']}")
+    print(f"Saldo anda saat ini : {thisdict[nama]['saldo']}")
+    print(f"Saldo e-pay anda saat ini : {thisdict[nama]['E-Pay']}")
 
 
-def registrasi_vip():
-    nama = input("Masukkan nama akun Anda: ")
-    print("===================================================================")
-    print("---------------------- Registrasi VIP Member ----------------------")
-    print("===================================================================")
-    try:
-        pin_member = input("Enter your current PIN : ")
-        pin_baru = input("Enter your new PIN: ")
-        if pin_member == data_account[nama]["PIN"]:
-            data_account[nama]["PIN"] = pin_baru
-            vip_pin["PIN"] = pin_baru
-            print(
-                f"Registrasi VIP member berhasil. PIN diatur menjadi {pin_baru}."
-            )
-        else:
-            print("PIN Anda tidak sesuai dengan data yang terdaftar.")
-    except ValueError:
-        print("Invalid input. Please enter a valid number.\n")
-
-
+# fungsi menu utama
 def menu():
     
     while True:
@@ -167,37 +150,42 @@ def menu():
 
         print("1. order here!")
         print("2. top-up")
-        print("3. Cek saldo")
-        print("4. Registrasi VIP")
-        print("5. redeem voucher")
-        print("6. keluar")
+        print("3. balance checking")
+        print("4. redeem voucher")
+
+        print("5. EXIT")
         pilihan = input("Masukkan pilihan menu : ")
         if pilihan == "1":
             candyshop_transaksi()
             member()
+            
         elif pilihan == "2":
             tambah_saldo()
         elif pilihan == "3":
             cek_saldo()
+
         elif pilihan == "4":
-            registrasi_vip()
-        elif pilihan == "5":
             total_harga = 0
             redeem_voucher(total_harga, nama_login)
-        elif pilihan == "6":
+        elif pilihan == "5":
+            print ('see you again, customer!')
             return
         else:
             print("data not valid, try again")
 
 
 while True:
-    print("================================ Login ================================")
-    nama_login = input("Masukkan Nama anda : ")
+    tabel = PrettyTable
+    print("================================================================")
+    print("-------------------please login candies!------------------------")
+    print("================================================================")
+    
+    nama_login = input("enter your name : ")
 
-    entered_pin = input("Masukkan Pin anda : ")
+    entered_pin = input("Enter your PIN : ")
     if (
-        nama_login in data_account
-        and data_account[nama_login]["PIN"] == entered_pin
+        nama_login in thisdict
+        and thisdict[nama_login]["PIN"] == entered_pin
     ):
         menu()
     else:
